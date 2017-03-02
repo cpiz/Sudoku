@@ -11,11 +11,11 @@ except ImportError: # if it's not there locally, try the wxPython lib.
     import wx.lib.agw.gradientbutton as GB
 
 class SudokuCanvas(wx.Panel):
-    '''Êı¶ÀÓÎÏ·»­²¼Àà'''
+    '''æ•°ç‹¬æ¸¸æˆç”»å¸ƒç±»'''
     __parent = None
 
     def __init__(self, parent, ID):
-        # ³õÊ¼»¯Ãæ°å
+        # åˆå§‹åŒ–é¢æ¿
         wx.Window.__init__(self, parent, ID)
         self.__parent = parent
         self.SetBackgroundColour("White")
@@ -23,20 +23,20 @@ class SudokuCanvas(wx.Panel):
         self.thickness = 1
         self.pen = wx.Pen(self.color, self.thickness, wx.SOLID)
 
-        # Ìí¼ÓÊı¶ÀÓÎÏ·
+        # æ·»åŠ æ•°ç‹¬æ¸¸æˆ
         self.margin = margin = 20
         self.sudoku = sudoku = c_sudoku.Sudoku((margin, margin))
 
-        # ¸ù¾İÓÎÏ·´óĞ¡ÖØĞÂÉè¶¨´°Ìå´óĞ¡
+        # æ ¹æ®æ¸¸æˆå¤§å°é‡æ–°è®¾å®šçª—ä½“å¤§å°
         self.SetClientSizeWH(sudoku.get_width() + 2 * margin + 160, sudoku.get_height() + 2 * margin)
 
-        # ¼ÆÊ±Æ÷
+        # è®¡æ—¶å™¨
         self.elapsed_time = 0
 
-        # ¶¨Ê±Æ÷
+        # å®šæ—¶å™¨
         self.timer = wx.Timer(self)
 
-        # Ìí¼Ó¼ÆÊ±ÎÄ×Ö
+        # æ·»åŠ è®¡æ—¶æ–‡å­—
         self.textTimer = textTimer = wx.StaticText(self)
         textTimer.SetFont(wx.Font(24, wx.SWISS, wx.NORMAL, wx.BOLD))
         textTimer.SetForegroundColour("Gray")
@@ -49,13 +49,13 @@ class SudokuCanvas(wx.Panel):
         textFile.SetFont(wx.Font(10, wx.SWISS, wx.NORMAL, wx.NORMAL))
         #textTimer.SetForegroundColour("Gray")
 
-        # Ìí¼Ó°´Å¥
+        # æ·»åŠ æŒ‰é’®
         bitmap = wx.Bitmap(os.path.normpath("random.png"), wx.BITMAP_TYPE_PNG)
-        self.btn_random = GB.GradientButton(self, -1, bitmap, "Ëæ»úÓÎÏ·", (self.sudoku.get_width() + 2 * self.margin, self.margin + self.sudoku.GRID_WIDTH * 3 + (self.sudoku.GRID_WIDTH - 40) / 2), (120, 40))
+        self.btn_random = GB.GradientButton(self, -1, bitmap, "éšæœºæ¸¸æˆ", (self.sudoku.get_width() + 2 * self.margin, self.margin + self.sudoku.GRID_WIDTH * 3 + (self.sudoku.GRID_WIDTH - 40) / 2), (120, 40))
         bitmap = wx.Bitmap(os.path.normpath("calc.png"), wx.BITMAP_TYPE_PNG)
-        self.btn_auto_calc = GB.GradientButton(self, -1, bitmap, "×Ô¶¯¼ÆËã", (self.sudoku.get_width() + 2 * self.margin, self.margin + self.sudoku.GRID_WIDTH * 7 + (self.sudoku.GRID_WIDTH - 40) / 2), (120, 40))
+        self.btn_auto_calc = GB.GradientButton(self, -1, bitmap, "è‡ªåŠ¨è®¡ç®—", (self.sudoku.get_width() + 2 * self.margin, self.margin + self.sudoku.GRID_WIDTH * 7 + (self.sudoku.GRID_WIDTH - 40) / 2), (120, 40))
         bitmap = wx.Bitmap(os.path.normpath("restart.png"), wx.BITMAP_TYPE_PNG)
-        self.btn_restart = GB.GradientButton(self, -1, bitmap, "ÖØĞÂ¿ªÊ¼", (self.sudoku.get_width() + 2 * self.margin, self.margin + self.sudoku.GRID_WIDTH * 8 + (self.sudoku.GRID_WIDTH - 40) / 2), (120, 40))
+        self.btn_restart = GB.GradientButton(self, -1, bitmap, "é‡æ–°å¼€å§‹", (self.sudoku.get_width() + 2 * self.margin, self.margin + self.sudoku.GRID_WIDTH * 8 + (self.sudoku.GRID_WIDTH - 40) / 2), (120, 40))
 
 
         self.file_cmb = file_cmb = wx.ComboBox(self, wx.NewId(), size = (100, 24), style = wx.CB_READONLY)
@@ -65,7 +65,7 @@ class SudokuCanvas(wx.Panel):
                 file_cmb.SetValue(file_name)
 
 
-        # °ó¶¨ÊÂ¼ş
+        # ç»‘å®šäº‹ä»¶
         self.Bind(wx.EVT_IDLE, self.OnIdle)
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
@@ -79,35 +79,35 @@ class SudokuCanvas(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnAutoCalcButton, self.btn_auto_calc)
         self.Bind(wx.EVT_BUTTON, self.OnRandomButton, self.btn_random)
 
-        # ¿ªÊ¼ÓÎÏ·
+        # å¼€å§‹æ¸¸æˆ
         self.InitGame("030500001050600002000802035010200706002000080704010200000100300006380000000006000")
         #self.InitGame()
         self.ReBuffer()
 
 
     def InitGame(self, puzzle = ''):
-        '''³õÊ¼»¯ÓÎÏ·'''
+        '''åˆå§‹åŒ–æ¸¸æˆ'''
         self.elapsed_time = 0
         self.timer.Stop()
         self.timer.Start(1000)
 
         self.textTimer.SetLabel("00:00:00")
-        self.textTimer.SetPosition((self.sudoku.get_width() + 2 * self.margin, self.margin + (48 - self.textTimer.GetSize()[1]) / 2)) # ÕâÊÇÎªÁËÈÃ¿Ø¼ş¶ÔÆë×ó±ßµÄ¸ñ×Ó
+        self.textTimer.SetPosition((self.sudoku.get_width() + 2 * self.margin, self.margin + (48 - self.textTimer.GetSize()[1]) / 2)) # è¿™æ˜¯ä¸ºäº†è®©æ§ä»¶å¯¹é½å·¦è¾¹çš„æ ¼å­
 
-        self.textProgress.SetLabel("Íê³É¶È:")
-        self.textProgress.SetPosition((self.sudoku.get_width() + 2 * self.margin, self.margin + 48 + (48 - self.textProgress.GetSize()[1]) / 2)) # ÕâÊÇÎªÁËÈÃ¿Ø¼ş¶ÔÆë×ó±ßµÄ¸ñ×Ó
+        self.textProgress.SetLabel("å®Œæˆåº¦:")
+        self.textProgress.SetPosition((self.sudoku.get_width() + 2 * self.margin, self.margin + 48 + (48 - self.textProgress.GetSize()[1]) / 2)) # è¿™æ˜¯ä¸ºäº†è®©æ§ä»¶å¯¹é½å·¦è¾¹çš„æ ¼å­
 
-        self.textFile.SetLabel("Ìâ¿â£º")
-        self.textFile.SetPosition((self.sudoku.get_width() + 2 * self.margin, self.margin + 106 + (48 - self.textProgress.GetSize()[1]) / 2)) # ÕâÊÇÎªÁËÈÃ¿Ø¼ş¶ÔÆë×ó±ßµÄ¸ñ×Ó
-        self.file_cmb.SetPosition((self.sudoku.get_width() + 2 * self.margin + 40, self.margin + 100 + (48 - self.textProgress.GetSize()[1]) / 2)) # ÕâÊÇÎªÁËÈÃ¿Ø¼ş¶ÔÆë×ó±ßµÄ¸ñ×Ó
+        self.textFile.SetLabel("é¢˜åº“ï¼š")
+        self.textFile.SetPosition((self.sudoku.get_width() + 2 * self.margin, self.margin + 106 + (48 - self.textProgress.GetSize()[1]) / 2)) # è¿™æ˜¯ä¸ºäº†è®©æ§ä»¶å¯¹é½å·¦è¾¹çš„æ ¼å­
+        self.file_cmb.SetPosition((self.sudoku.get_width() + 2 * self.margin + 40, self.margin + 100 + (48 - self.textProgress.GetSize()[1]) / 2)) # è¿™æ˜¯ä¸ºäº†è®©æ§ä»¶å¯¹é½å·¦è¾¹çš„æ ¼å­
 
         self.sudoku.init_sudoku(puzzle, self.file_cmb.GetValue())
 
-        self.__parent.SetTitle("Sudoku - µÚ" + str(self.sudoku.get_puzzle_num()) + "Ìâ")
+        self.__parent.SetTitle("Sudoku - ç¬¬" + str(self.sudoku.get_puzzle_num()) + "é¢˜")
 
 
     def ReBuffer(self):
-        #3 ´´½¨Ò»¸ö»º´æµÄÉè±¸ÉÏÏÂÎÄ
+        #3 åˆ›å»ºä¸€ä¸ªç¼“å­˜çš„è®¾å¤‡ä¸Šä¸‹æ–‡
         #print "ReBuffer"
         size = self.GetClientSize()
         self.__buffer_bitmap = wx.EmptyBitmap(size.width, size.height)
@@ -128,20 +128,20 @@ class SudokuCanvas(wx.Panel):
         pass
 
     def OnIdle(self, event):
-        #12 ¿ÕÏĞÊ±µÄ´¦Àí
+        #12 ç©ºé—²æ—¶çš„å¤„ç†
         #print "OnIdle"
         if self.reReBuffer:
             self.ReBuffer()
             self.Refresh(False)
 
     def OnPaint(self, event):
-        #13 ´¦ÀíÒ»¸öpaint£¨Ãè»æ£©ÇëÇó
+        #13 å¤„ç†ä¸€ä¸ªpaintï¼ˆæç»˜ï¼‰è¯·æ±‚
         #print "OnPaint"
-        self.textProgress.SetLabel("Íê³É¶È:" + str(self.sudoku.get_progress()) + "/" + str(self.sudoku.GRID_NUM ** 2))
+        self.textProgress.SetLabel("å®Œæˆåº¦:" + str(self.sudoku.get_progress()) + "/" + str(self.sudoku.GRID_NUM ** 2))
         wx.BufferedPaintDC(self, self.__buffer_bitmap)
 
     def OnKeyDown(self, event):
-        '''´¦Àí¼üÅÌÊÂ¼ş'''
+        '''å¤„ç†é”®ç›˜äº‹ä»¶'''
         keycode = event.GetKeyCode()
         #print keycode
         if keycode == wx.WXK_ESCAPE:
@@ -166,18 +166,18 @@ class SudokuCanvas(wx.Panel):
             event.Skip()
 
     def OnCopy(self):
-        '''¸´ÖÆÌâ¾Ö'''
+        '''å¤åˆ¶é¢˜å±€'''
         self.do = wx.TextDataObject()
         self.do.SetText(self.sudoku.get_puzzle_str())
-        # ¸´ÖÆµ±¾Öµ½¼ôÌù°å
+        # å¤åˆ¶å½“å±€åˆ°å‰ªè´´æ¿
         if wx.TheClipboard.Open():
             wx.TheClipboard.SetData(self.do)
             wx.TheClipboard.Close()
-            wx.MessageBox("ÒÑ½«´ËÌâµ¼³öµ½¼ôÌù°å", "µ¼³öÌáÊ¾")
+            wx.MessageBox("å·²å°†æ­¤é¢˜å¯¼å‡ºåˆ°å‰ªè´´æ¿", "å¯¼å‡ºæç¤º")
 
 
     def OnPaste(self):
-        '''Í¨¹ıÕ³Ìùµ¼ÈëÌâ¾Ö'''
+        '''é€šè¿‡ç²˜è´´å¯¼å…¥é¢˜å±€'''
         do = wx.TextDataObject()
         if wx.TheClipboard.Open():
             paste_ok = wx.TheClipboard.GetData(do)
@@ -186,10 +186,10 @@ class SudokuCanvas(wx.Panel):
                 puzzle_str = do.GetText()
                 if puzzle_str.isdigit()                                         \
                         and len(puzzle_str) == c_sudoku.Sudoku.GRID_NUM ** 2:
-                    dlg = wx.MessageDialog(self, "È·¶¨Òªµ¼Èë¼ôÌù°åÖĞµÄÌâ¾ÖÂğ?", "µ¼ÈëÈ·ÈÏ", wx.YES_NO)
+                    dlg = wx.MessageDialog(self, "ç¡®å®šè¦å¯¼å…¥å‰ªè´´æ¿ä¸­çš„é¢˜å±€å—?", "å¯¼å…¥ç¡®è®¤", wx.YES_NO)
                     if dlg.ShowModal() == wx.ID_YES:
                         self.InitGame(puzzle_str)
-                        self.SetFocus()     # ´¦ÀíÍê°´Å¥ÊÂ¼şºó±ØĞë½«focus½»¸øcanvas, ·ñÔòÎŞ·¨ÏìÓ¦¼üÅÌÊÂ¼ş
+                        self.SetFocus()     # å¤„ç†å®ŒæŒ‰é’®äº‹ä»¶åå¿…é¡»å°†focusäº¤ç»™canvas, å¦åˆ™æ— æ³•å“åº”é”®ç›˜äº‹ä»¶
                         self.reReBuffer = True
                     dlg.Destroy()
 
@@ -202,28 +202,28 @@ class SudokuCanvas(wx.Panel):
 
 
     def OnTimer(self, event):
-        # ¼ÆÊ±Æ÷+1£¬ ²¢ÌáÊ¾µ±Ç°ÒÑÊ¹ÓÃµÄÊ±¼ä
+        # è®¡æ—¶å™¨+1ï¼Œ å¹¶æç¤ºå½“å‰å·²ä½¿ç”¨çš„æ—¶é—´
         self.elapsed_time += 1
         self.textTimer.SetLabel(time.strftime('%H:%M:%S', time.gmtime(self.elapsed_time)))
 
 
     def OnRestartButton(self, event):
-        '''µã»÷ÖØĞÂ¿ªÊ¼°´Å¥ÊÂ¼ş'''
+        '''ç‚¹å‡»é‡æ–°å¼€å§‹æŒ‰é’®äº‹ä»¶'''
         self.InitGame(self.sudoku.get_puzzle_str())
-        self.SetFocus()     # ´¦ÀíÍê°´Å¥ÊÂ¼şºó±ØĞë½«focus½»¸øcanvas, ·ñÔòÎŞ·¨ÏìÓ¦¼üÅÌÊÂ¼ş
+        self.SetFocus()     # å¤„ç†å®ŒæŒ‰é’®äº‹ä»¶åå¿…é¡»å°†focusäº¤ç»™canvas, å¦åˆ™æ— æ³•å“åº”é”®ç›˜äº‹ä»¶
         self.reReBuffer = True
 
 
     def OnAutoCalcButton(self, event):
-        '''µã»÷×Ô¶¯¼ÆËã°´Å¥ÊÂ¼ş'''
+        '''ç‚¹å‡»è‡ªåŠ¨è®¡ç®—æŒ‰é’®äº‹ä»¶'''
         self.sudoku.ai_calc()
-        self.SetFocus()     # ´¦ÀíÍê°´Å¥ÊÂ¼şºó±ØĞë½«focus½»¸øcanvas, ·ñÔòÎŞ·¨ÏìÓ¦¼üÅÌÊÂ¼ş
+        self.SetFocus()     # å¤„ç†å®ŒæŒ‰é’®äº‹ä»¶åå¿…é¡»å°†focusäº¤ç»™canvas, å¦åˆ™æ— æ³•å“åº”é”®ç›˜äº‹ä»¶
         self.reReBuffer = True
 
 
     def OnRandomButton(self, event):
         self.InitGame()
-        self.SetFocus()     # ´¦ÀíÍê°´Å¥ÊÂ¼şºó±ØĞë½«focus½»¸øcanvas, ·ñÔòÎŞ·¨ÏìÓ¦¼üÅÌÊÂ¼ş
+        self.SetFocus()     # å¤„ç†å®ŒæŒ‰é’®äº‹ä»¶åå¿…é¡»å°†focusäº¤ç»™canvas, å¦åˆ™æ— æ³•å“åº”é”®ç›˜äº‹ä»¶
         self.reReBuffer = True
 
 
@@ -243,7 +243,7 @@ class SudokuApp(wx.App):
         return True
 
 if __name__ == "__main__":
-    app = SudokuApp(False)  # ÉèÖÃ³ÉFalse¿ÉÒÔÔÚÃüÁîĞĞ´°¿ÚÊä³öµ÷ÊÔĞÅÏ¢
+    app = SudokuApp(False)  # è®¾ç½®æˆFalseå¯ä»¥åœ¨å‘½ä»¤è¡Œçª—å£è¾“å‡ºè°ƒè¯•ä¿¡æ¯
     app.MainLoop()
 
 

@@ -7,20 +7,20 @@ import pdb
 import random
 
 class Sudoku:
-    SCALE               = 3             # ÓÎÏ·¹æÄ£Îª scale * scale
-    GRID_NUM            = SCALE ** 2    # Ã¿Ò»ĞĞÁĞµÄ¸ñÊı
-    GRID_WIDTH          = 48            # Ã¿¸ö¸ñ×ÓµÄ¿í
-    FONT_SIZE           = 20            # ÎÄ×Ö×ÖºÅ
-    __puzzle_idx        = 0             # ÌâºÅ£¬´ËÌâÔÚÌâÄ¿ÎÄ¼şÖĞµÄË÷Òı£¬´Ó0¿ªÊ¼
+    SCALE               = 3             # æ¸¸æˆè§„æ¨¡ä¸º scale * scale
+    GRID_NUM            = SCALE ** 2    # æ¯ä¸€è¡Œåˆ—çš„æ ¼æ•°
+    GRID_WIDTH          = 48            # æ¯ä¸ªæ ¼å­çš„å®½
+    FONT_SIZE           = 20            # æ–‡å­—å­—å·
+    __puzzle_idx        = 0             # é¢˜å·ï¼Œæ­¤é¢˜åœ¨é¢˜ç›®æ–‡ä»¶ä¸­çš„ç´¢å¼•ï¼Œä»0å¼€å§‹
     __progress          = 0
-    __anchor_pos        = (0, 0)        # ÓÎÏ·»æÖÆÆğµã×ø±ê
-    __puzzle_sudoku     = []            # Êı¶ÀÃÕÌâ¶şÎ¬Êı×Ö, µÚÒ»Î¬ÎªĞĞ, µÚ¶şÎ¬ÎªÁĞ
-    __answer_sudoku     = []            # Êı¶À´ğ°¸¶şÎ¬Êı×é
-    __draft_sudoku      = []            # Êı¶À²İ¸åÈıÎ¬Êı×é, Ç°Ò»¶şÎ¬Í¬ÉÏ, µÚÈıÎ¬Îªµ¥Ôª¸ñÖĞ¿ÉÄÜ´æÔÚµÄÊı×Ö
-    __actived_grid      = (-1, -1)      # µ±Ç°¼¤»î¸ñ
-    __actived_num       = 0             # µ±Ç°¼¤»î¸ñÖĞµÄÊı×Ö
-    __affected_grids    = []            # µ±Ç°¼¤»î¸ñËùÓ°Ïìµ½µÄ·¶Î§, Ã¿Ò»¸öÔªËØÊÇÒ»¸öµ¥Ôª¸ñµã
-    __puzzle_lib        = []            # Êı¶ÀÌâ¿â
+    __anchor_pos        = (0, 0)        # æ¸¸æˆç»˜åˆ¶èµ·ç‚¹åæ ‡
+    __puzzle_sudoku     = []            # æ•°ç‹¬è°œé¢˜äºŒç»´æ•°å­—, ç¬¬ä¸€ç»´ä¸ºè¡Œ, ç¬¬äºŒç»´ä¸ºåˆ—
+    __answer_sudoku     = []            # æ•°ç‹¬ç­”æ¡ˆäºŒç»´æ•°ç»„
+    __draft_sudoku      = []            # æ•°ç‹¬è‰ç¨¿ä¸‰ç»´æ•°ç»„, å‰ä¸€äºŒç»´åŒä¸Š, ç¬¬ä¸‰ç»´ä¸ºå•å…ƒæ ¼ä¸­å¯èƒ½å­˜åœ¨çš„æ•°å­—
+    __actived_grid      = (-1, -1)      # å½“å‰æ¿€æ´»æ ¼
+    __actived_num       = 0             # å½“å‰æ¿€æ´»æ ¼ä¸­çš„æ•°å­—
+    __affected_grids    = []            # å½“å‰æ¿€æ´»æ ¼æ‰€å½±å“åˆ°çš„èŒƒå›´, æ¯ä¸€ä¸ªå…ƒç´ æ˜¯ä¸€ä¸ªå•å…ƒæ ¼ç‚¹
+    __puzzle_lib        = []            # æ•°ç‹¬é¢˜åº“
 
 
     def __init__(self, pos = (0, 0)):
@@ -31,9 +31,9 @@ class Sudoku:
 
 
     def init_sudoku(self, init_str = "", puzzle_file = "game.pzl"):
-        '''³õÊ¼»¯Ö¸¶¨ÃÕÌâ'''
+        '''åˆå§‹åŒ–æŒ‡å®šè°œé¢˜'''
 
-        #Èç¹ûÃ»ÓĞÖ¸¶¨ÔòÊ¹ÓÃËæ»úÌâ
+        #å¦‚æœæ²¡æœ‰æŒ‡å®šåˆ™ä½¿ç”¨éšæœºé¢˜
         if len(init_str) == 0:
             if len(self.__puzzle_lib) == 0:
                 f = file(puzzle_file, 'r')
@@ -45,14 +45,14 @@ class Sudoku:
 
         self.__puzzle_sudoku   = [[0 for a in range(1, Sudoku.GRID_NUM + 1)] for b in range(Sudoku.GRID_NUM)]
         if len(init_str) == Sudoku.GRID_NUM ** 2 and init_str.isdigit():
-            for i in range(Sudoku.GRID_NUM):        # YÖáÑ­»·
-                for j in range(Sudoku.GRID_NUM):    # XÖáÑ­»·
+            for i in range(Sudoku.GRID_NUM):        # Yè½´å¾ªç¯
+                for j in range(Sudoku.GRID_NUM):    # Xè½´å¾ªç¯
                     self.__puzzle_sudoku[i][j] = int(init_str[i * Sudoku.GRID_NUM + j])
 
-        # ³õÊ¼»¯²İ¸å
+        # åˆå§‹åŒ–è‰ç¨¿
         self.__draft_sudoku     = [[[] for a in range(1, Sudoku.GRID_NUM + 1)] for b in range(Sudoku.GRID_NUM)]
 
-        # ³õÊ¼»¯´ğ°¸
+        # åˆå§‹åŒ–ç­”æ¡ˆ
         self.__answer_sudoku    = copy.deepcopy(self.__puzzle_sudoku)
         self.__progress = 0
         for i in range(Sudoku.GRID_NUM):
@@ -60,17 +60,17 @@ class Sudoku:
                 if self.__answer_sudoku[i][j] != 0:
                     self.__progress += 1
 
-        # ³õÊ¼»¯¼¤»îÇø
+        # åˆå§‹åŒ–æ¿€æ´»åŒº
         self.__actived_grid     = (-1, -1)
         self.__affected_grids   = []
         self.__actived_num      = 0
 
 
     def __debug_print(self, arr):
-        '''ÔÚ¿ØÖÆÌ¨µ÷ÊÔ´òÓ¡Êı×é'''
+        '''åœ¨æ§åˆ¶å°è°ƒè¯•æ‰“å°æ•°ç»„'''
         print "----------------------"
-        for i in range(len(arr)):        # YÖáÑ­»·
-            for j in range(len(arr[i])):    # XÖáÑ­»·
+        for i in range(len(arr)):        # Yè½´å¾ªç¯
+            for j in range(len(arr[i])):    # Xè½´å¾ªç¯
                 print arr[i][j],'|',
             print
         print "----------------------"
@@ -78,16 +78,16 @@ class Sudoku:
 
     def get_puzzle_str(self):
         s = ''
-        for i in range(Sudoku.GRID_NUM):        # YÖáÑ­»·
-            for j in range(Sudoku.GRID_NUM):    # XÖáÑ­»·
+        for i in range(Sudoku.GRID_NUM):        # Yè½´å¾ªç¯
+            for j in range(Sudoku.GRID_NUM):    # Xè½´å¾ªç¯
                 s += str(self.__puzzle_sudoku[i][j])
         return s
 
 
     def get_answer_str(self):
         s = ''
-        for i in range(Sudoku.GRID_NUM):        # YÖáÑ­»·
-            for j in range(Sudoku.GRID_NUM):    # XÖáÑ­»·
+        for i in range(Sudoku.GRID_NUM):        # Yè½´å¾ªç¯
+            for j in range(Sudoku.GRID_NUM):    # Xè½´å¾ªç¯
                 s += str(self.__answer_sudoku[i][j])
         return s
 
@@ -109,73 +109,73 @@ class Sudoku:
 
 
     def ai_calc(self):
-        '''×Ô¶¯¼ÆËã'''
+        '''è‡ªåŠ¨è®¡ç®—'''
         loop = True
         while loop:
             loop = False
 
-            # step1.¼ÆËãËùÒÔ¿Õ°×¸ñ×ÓÖĞ¿ÉÄÜ³öÏÖµÄÊı×Ö
+            # step1.è®¡ç®—æ‰€ä»¥ç©ºç™½æ ¼å­ä¸­å¯èƒ½å‡ºç°çš„æ•°å­—
             self.__fill_draft()
 
-            # step2.ÕÒ²İ¸åÖĞÖ»ÓĞÒ»¸öÊı×ÖµÄÌîÈë´ğ°¸
-            for i in range(Sudoku.GRID_NUM):        # YÖáÑ­»·
-                for j in range(Sudoku.GRID_NUM):    # XÖáÑ­»·
+            # step2.æ‰¾è‰ç¨¿ä¸­åªæœ‰ä¸€ä¸ªæ•°å­—çš„å¡«å…¥ç­”æ¡ˆ
+            for i in range(Sudoku.GRID_NUM):        # Yè½´å¾ªç¯
+                for j in range(Sudoku.GRID_NUM):    # Xè½´å¾ªç¯
                     if len(self.__draft_sudoku[i][j]) == 1:
                         self.__actived_grid = (i, j)
                         self.__affected_grids = self.__get_affect(self.__actived_grid)
                         self.__actived_num = self.__draft_sudoku[i][j][0]
-                        print "µ¥Ôª¸ñ", j, i, "Ö»ÓĞÒ»¸ö¿ÉÄÜÊı×Ö", self.__draft_sudoku[i][j][0]
+                        print "å•å…ƒæ ¼", j, i, "åªæœ‰ä¸€ä¸ªå¯èƒ½æ•°å­—", self.__draft_sudoku[i][j][0]
                         self.input_num(self.__draft_sudoku[i][j][0])
                         loop = True
                         del self.__draft_sudoku[i][j][:]
                         return
 
 
-            # step3.ÕÒ²İ¸åÖĞĞĞÁĞÇøÄÚÎ¨Ò»µÄÊı×ÖÌîÈë´ğ°¸
+            # step3.æ‰¾è‰ç¨¿ä¸­è¡Œåˆ—åŒºå†…å”¯ä¸€çš„æ•°å­—å¡«å…¥ç­”æ¡ˆ
             #self.__debug_print(self.__answer_sudoku)
-            for i in range(Sudoku.GRID_NUM):        # YÖáÑ­»·
-                for j in range(Sudoku.GRID_NUM):    # XÖáÑ­»·
+            for i in range(Sudoku.GRID_NUM):        # Yè½´å¾ªç¯
+                for j in range(Sudoku.GRID_NUM):    # Xè½´å¾ªç¯
                     for k in range(len(self.__draft_sudoku[i][j])):
                         if self.__is_unique_one(self.__draft_sudoku, i, j, self.__draft_sudoku[i][j][k]):
-                            # »ñµÃĞÂ´ğ°¸
+                            # è·å¾—æ–°ç­”æ¡ˆ
                             self.__actived_grid = (i, j)
                             self.__affected_grids = self.__get_affect(self.__actived_grid)
                             self.__actived_num = self.__draft_sudoku[i][j][k]
-                            print "µ¥Ôª¸ñ", j, i, "ÇøÄÚÎ¨Ò»Êı×Ö", self.__draft_sudoku[i][j][k]
+                            print "å•å…ƒæ ¼", j, i, "åŒºå†…å”¯ä¸€æ•°å­—", self.__draft_sudoku[i][j][k]
                             self.input_num(self.__draft_sudoku[i][j][k])
                             loop = True
                             del self.__draft_sudoku[i][j][:]
                             return
                             break
 
-        # ÔËĞĞµ½ÕâËµÃ÷¸ù¾İ²İ¸åÃ»ÓĞµÃµ½Ö±¹Û½â£¬¶Ô²İ¸å×ö¶ş´ÎÅÅ³ı
+        # è¿è¡Œåˆ°è¿™è¯´æ˜æ ¹æ®è‰ç¨¿æ²¡æœ‰å¾—åˆ°ç›´è§‚è§£ï¼Œå¯¹è‰ç¨¿åšäºŒæ¬¡æ’é™¤
         self.__reduce_draft()
 
 
     def __fill_draft(self, grid = (-1, -1)):
-        '''×Ô¶¯Ìî³ä²İ¸å
+        '''è‡ªåŠ¨å¡«å……è‰ç¨¿
 
-        grid - Ö¸¶¨µÄµ¥Ôª¸ñ, Èô²»Ö¸¶¨, Ôò¼ÆËãËùÓĞ¿Õ°×¸ñ'''
+        grid - æŒ‡å®šçš„å•å…ƒæ ¼, è‹¥ä¸æŒ‡å®š, åˆ™è®¡ç®—æ‰€æœ‰ç©ºç™½æ ¼'''
         if grid >= (0, 0):
-            # ¼ÆËãÖ¸¶¨¸ñ×Ó
-            del self.__draft_sudoku[grid[0]][grid[1]][:]    #Çå¿Õ¸Ã¸ñ²İ¸å
+            # è®¡ç®—æŒ‡å®šæ ¼å­
+            del self.__draft_sudoku[grid[0]][grid[1]][:]    #æ¸…ç©ºè¯¥æ ¼è‰ç¨¿
             if self.__answer_sudoku[grid[0]][grid[1]] <= 0:
                 for k in range(1, Sudoku.GRID_NUM + 1):
                     if self.__is_unique_all(self.__answer_sudoku, grid[0], grid[1], k):
                         self.__draft_sudoku[grid[0]][grid[1]].append(k)
         else:
-            # Î´Ö¸¶¨¸ñ×Ó, ¼ÆËãÈ«²¿
-            for i in range(Sudoku.GRID_NUM):        # YÖáÑ­»·
-                for j in range(Sudoku.GRID_NUM):    # XÖáÑ­»·
+            # æœªæŒ‡å®šæ ¼å­, è®¡ç®—å…¨éƒ¨
+            for i in range(Sudoku.GRID_NUM):        # Yè½´å¾ªç¯
+                for j in range(Sudoku.GRID_NUM):    # Xè½´å¾ªç¯
                     self.__fill_draft((i, j))
 
 
     def __reduce_draft(self):
-        '''¶Ô²İ¸å¶ş´Î´¦Àí£¬¼ÌĞøÅÅ³ö²»¿ÉÄÜµÄÊı×Ö'''
-        # Ñ­»·9¸öÇø
+        '''å¯¹è‰ç¨¿äºŒæ¬¡å¤„ç†ï¼Œç»§ç»­æ’å‡ºä¸å¯èƒ½çš„æ•°å­—'''
+        # å¾ªç¯9ä¸ªåŒº
         for i in range(Sudoku.SCALE):       # Y
             for j in range(Sudoku.SCALE):   # X
-                # ÔÚÃ¿¸öÇøÖĞÌ½²éÃ¿¸öÊı×Ö
+                # åœ¨æ¯ä¸ªåŒºä¸­æ¢æŸ¥æ¯ä¸ªæ•°å­—
                 for n in range(1, Sudoku.GRID_NUM + 1):
                     x_uniq = -1
                     y_uniq = -1
@@ -185,7 +185,7 @@ class Sudoku:
                                 if x_uniq == -1:
                                     x_uniq = x
                                 elif x_uniq != x:
-                                    # Õâ±íÊ¾´Ëµ±Ç°²éÕÒµÄÊı×Ö´æÔÚÓÚ2¸öx×ø±êÖĞ£¬Ã»ÓĞ°ïÖú
+                                    # è¿™è¡¨ç¤ºæ­¤å½“å‰æŸ¥æ‰¾çš„æ•°å­—å­˜åœ¨äº2ä¸ªxåæ ‡ä¸­ï¼Œæ²¡æœ‰å¸®åŠ©
                                     x_uniq = -2
 
                                 if y_uniq == -1:
@@ -193,59 +193,59 @@ class Sudoku:
                                 elif y_uniq != y:
                                     y_uniq = -2
                     if x_uniq > 0:
-                        # ´ËnÒÑÔÚ´ËÇø¶ÀÕ¼x_uniqÖá£¬ÓëÆäÍ¬ÁĞµÄÁíÍâÁ½ÇøÖĞx_uniqÉÏ²»¿ÉÄÜ´æÔÚn
+                        # æ­¤nå·²åœ¨æ­¤åŒºç‹¬å x_uniqè½´ï¼Œä¸å…¶åŒåˆ—çš„å¦å¤–ä¸¤åŒºä¸­x_uniqä¸Šä¸å¯èƒ½å­˜åœ¨n
                         for yy in range(Sudoku.GRID_NUM):
                             if (yy // Sudoku.SCALE) != i and n in self.__draft_sudoku[yy][x_uniq]:
-                                print x_uniq, yy, "²»Ó¦ÓĞ", n, "ÒÑ±»", j, i, "Çø¶ÀÕ¼"
+                                print x_uniq, yy, "ä¸åº”æœ‰", n, "å·²è¢«", j, i, "åŒºç‹¬å "
                                 self.__draft_sudoku[yy][x_uniq].remove(n)
 
                     if y_uniq > 0:
                         for xx in range(Sudoku.GRID_NUM):
                             if (xx // Sudoku.SCALE) != j and n in self.__draft_sudoku[y_uniq][xx]:
-                                print xx, y_uniq, "²»Ó¦ÓĞ", n, "ÒÑ±»", j, i, "Çø¶ÀÕ¼"
+                                print xx, y_uniq, "ä¸åº”æœ‰", n, "å·²è¢«", j, i, "åŒºç‹¬å "
                                 self.__draft_sudoku[y_uniq][xx].remove(n)
 
 
     def __take_draft(self):
-        '''×Ô¶¯ÒÆ³ı²İ¸å'''
+        '''è‡ªåŠ¨ç§»é™¤è‰ç¨¿'''
         pass
 
 
     def __clear_draft(self, row, col, num):
-        """Çå³ıÖ¸¶¨¸ñĞĞÁĞÇøÖĞÖ¸¶¨Êı×ÖµÄ²İ¸å"""
-        for i in range(Sudoku.GRID_NUM):        # YÖáÑ­»·
-            for j in range(Sudoku.GRID_NUM):    # XÖáÑ­»·
-                if row == i and col == j:   # Í¬¸ñ, Çå³ı¸Ã¸ñÄÚËùÓĞ²İ¸å
+        """æ¸…é™¤æŒ‡å®šæ ¼è¡Œåˆ—åŒºä¸­æŒ‡å®šæ•°å­—çš„è‰ç¨¿"""
+        for i in range(Sudoku.GRID_NUM):        # Yè½´å¾ªç¯
+            for j in range(Sudoku.GRID_NUM):    # Xè½´å¾ªç¯
+                if row == i and col == j:   # åŒæ ¼, æ¸…é™¤è¯¥æ ¼å†…æ‰€æœ‰è‰ç¨¿
                     del self.__draft_sudoku[i][j][:]
                     continue
                 else:
                     erase = False
-                    if row == i:  # Í¬ĞĞ
+                    if row == i:  # åŒè¡Œ
                         erase = True
-                    elif col == j:  # Í¬ÁĞ
+                    elif col == j:  # åŒåˆ—
                         erase = True
-                    elif row // Sudoku.SCALE == i // Sudoku.SCALE and col // Sudoku.SCALE == j // Sudoku.SCALE:     # Í¬Çø
+                    elif row // Sudoku.SCALE == i // Sudoku.SCALE and col // Sudoku.SCALE == j // Sudoku.SCALE:     # åŒåŒº
                         erase = True;
 
-                    if erase and num in self.__draft_sudoku[i][j]:  # Í¬ĞĞ/ÁĞ/Çø, Çå³ı²İ¸åÖĞµÄ¸ÃÊı×Ö
+                    if erase and num in self.__draft_sudoku[i][j]:  # åŒè¡Œ/åˆ—/åŒº, æ¸…é™¤è‰ç¨¿ä¸­çš„è¯¥æ•°å­—
                         self.__draft_sudoku[i][j].remove(num)
 
 
     def __is_unique_all(self, arr, row, col, var = 0):
-        '''¼ì²éÖ¸¶¨Î»ÖÃÊı×ÖÊÇ·ñĞĞÁĞÇøÄÚÎ¨Ò»
+        '''æ£€æŸ¥æŒ‡å®šä½ç½®æ•°å­—æ˜¯å¦è¡Œåˆ—åŒºå†…å”¯ä¸€
 
-        arr[row][col]¿ÉÒÔÊÇÕûĞÎÊı×Ö, Ò²¿ÉÒÔÊÇlist
-        Èç¹ûvarĞ¡ÓÚ0, ÔòÊ¹ÓÃarr[row][col]½øĞĞÅĞ¶Ï
-        Î¨Ò»·µ»ØTrue, ·ñÔò·µ»ØFalse'''
+        arr[row][col]å¯ä»¥æ˜¯æ•´å½¢æ•°å­—, ä¹Ÿå¯ä»¥æ˜¯list
+        å¦‚æœvarå°äº0, åˆ™ä½¿ç”¨arr[row][col]è¿›è¡Œåˆ¤æ–­
+        å”¯ä¸€è¿”å›True, å¦åˆ™è¿”å›False'''
         return self.__is_unique_row(arr, row, col, var) and self.__is_unique_col(arr, row, col, var) and self.__is_unique_zone(arr, row, col, var)
 
 
     def __is_unique_one(self, arr, row, col, var = 0):
-        '''¼ì²éÖ¸¶¨Î»ÖÃÊı×ÖÊÇ·ñĞĞ»òÁĞ»òÇøÄÚÎ¨Ò»
+        '''æ£€æŸ¥æŒ‡å®šä½ç½®æ•°å­—æ˜¯å¦è¡Œæˆ–åˆ—æˆ–åŒºå†…å”¯ä¸€
 
-        arr[row][col]¿ÉÒÔÊÇÕûĞÎÊı×Ö, Ò²¿ÉÒÔÊÇlist
-        Èç¹ûvarĞ¡ÓÚ0, ÔòÊ¹ÓÃarr[row][col]½øĞĞÅĞ¶Ï
-        Î¨Ò»·µ»ØTrue, ·ñÔò·µ»ØFalse'''
+        arr[row][col]å¯ä»¥æ˜¯æ•´å½¢æ•°å­—, ä¹Ÿå¯ä»¥æ˜¯list
+        å¦‚æœvarå°äº0, åˆ™ä½¿ç”¨arr[row][col]è¿›è¡Œåˆ¤æ–­
+        å”¯ä¸€è¿”å›True, å¦åˆ™è¿”å›False'''
         #print self.__is_unique_row(arr, row, col, var)
         #print self.__is_unique_col(arr, row, col, var)
         #print self.__is_unique_zone(arr, row, col, var)
@@ -253,11 +253,11 @@ class Sudoku:
 
 
     def __is_unique_row(self, arr, row, col, var = 0):
-        '''¼ì²éÖ¸¶¨Î»ÖÃÊı×ÖÊÇ·ñĞĞÄÚÎ¨Ò»
+        '''æ£€æŸ¥æŒ‡å®šä½ç½®æ•°å­—æ˜¯å¦è¡Œå†…å”¯ä¸€
 
-        arr[row][col]¿ÉÒÔÊÇÕûĞÎÊı×Ö, Ò²¿ÉÒÔÊÇlist
-        Èç¹ûvarĞ¡ÓÚ0, ÔòÊ¹ÓÃarr[row][col]½øĞĞÅĞ¶Ï.
-        Î¨Ò»·µ»ØTrue, ·ñÔò·µ»ØFalse'''
+        arr[row][col]å¯ä»¥æ˜¯æ•´å½¢æ•°å­—, ä¹Ÿå¯ä»¥æ˜¯list
+        å¦‚æœvarå°äº0, åˆ™ä½¿ç”¨arr[row][col]è¿›è¡Œåˆ¤æ–­.
+        å”¯ä¸€è¿”å›True, å¦åˆ™è¿”å›False'''
         if var <= 0:
             var = arr[row][col]
         if var > 0:
@@ -274,11 +274,11 @@ class Sudoku:
 
 
     def __is_unique_col(self, arr, row, col, var = 0):
-        '''¼ì²éÖ¸¶¨Î»ÖÃÊı×ÖÊÇ·ñÁĞÄÚÎ¨Ò»
+        '''æ£€æŸ¥æŒ‡å®šä½ç½®æ•°å­—æ˜¯å¦åˆ—å†…å”¯ä¸€
 
-        arr[row][col]¿ÉÒÔÊÇÕûĞÎÊı×Ö, Ò²¿ÉÒÔÊÇlist
-        Èç¹ûvarĞ¡ÓÚ0, ÔòÊ¹ÓÃarr[row][col]½øĞĞÅĞ¶Ï
-        Î¨Ò»·µ»ØTrue, ·ñÔò·µ»ØFalse'''
+        arr[row][col]å¯ä»¥æ˜¯æ•´å½¢æ•°å­—, ä¹Ÿå¯ä»¥æ˜¯list
+        å¦‚æœvarå°äº0, åˆ™ä½¿ç”¨arr[row][col]è¿›è¡Œåˆ¤æ–­
+        å”¯ä¸€è¿”å›True, å¦åˆ™è¿”å›False'''
         if var <= 0:
             var = arr[row][col]
         if var > 0:
@@ -286,7 +286,7 @@ class Sudoku:
                 if i != row:
                     if type(0) == type(arr[i][col]):
                         if var == arr[i][col]:
-                            return False    # ÔÚÁĞÄÚÕÒµ½ÖØ¸´Êı×Ö
+                            return False    # åœ¨åˆ—å†…æ‰¾åˆ°é‡å¤æ•°å­—
                     elif type([]) == type(arr[i][col]):
                         if var in arr[i][col]:
                             return False
@@ -295,14 +295,14 @@ class Sudoku:
 
 
     def __is_unique_zone(self, arr, row, col, var = 0):
-        '''¼ì²éÖ¸¶¨Î»ÖÃÊı×ÖÊÇ·ñÇøÄÚÎ¨Ò»
+        '''æ£€æŸ¥æŒ‡å®šä½ç½®æ•°å­—æ˜¯å¦åŒºå†…å”¯ä¸€
 
-        arr[row][col]¿ÉÒÔÊÇÕûĞÎÊı×Ö, Ò²¿ÉÒÔÊÇlist
-        Èç¹ûvarĞ¡ÓÚ0, ÔòÊ¹ÓÃarr[row][col]½øĞĞÅĞ¶Ï
-        Î¨Ò»·µ»ØTrue, ·ñÔò·µ»ØFalse'''
+        arr[row][col]å¯ä»¥æ˜¯æ•´å½¢æ•°å­—, ä¹Ÿå¯ä»¥æ˜¯list
+        å¦‚æœvarå°äº0, åˆ™ä½¿ç”¨arr[row][col]è¿›è¡Œåˆ¤æ–­
+        å”¯ä¸€è¿”å›True, å¦åˆ™è¿”å›False'''
         if var <= 0:
             var = arr[row][col]
-        # ÕÒµ½¸ÃÇøÄÚµÚÒ»¸ö¸ñ×ÓµÄÎ»ÖÃ
+        # æ‰¾åˆ°è¯¥åŒºå†…ç¬¬ä¸€ä¸ªæ ¼å­çš„ä½ç½®
         if var > 0:
             start_row = (row // Sudoku.SCALE) * Sudoku.SCALE
             start_col = (col // Sudoku.SCALE) * Sudoku.SCALE
@@ -312,16 +312,16 @@ class Sudoku:
                         #print "i:",i,", j",j
                         if type(0) == type(arr[start_row + i][start_col + j]):
                             if var == arr[start_row + i][start_col + j]:
-                                return False    # ÔÚÇøÄÚÕÒµ½ÖØ¸´Êı×Ö
+                                return False    # åœ¨åŒºå†…æ‰¾åˆ°é‡å¤æ•°å­—
                         elif type([]) == type(arr[start_row + i][start_col + j]):
                             #print var, 'in', arr[start_row + i][start_col + j]
                             if var in arr[start_row + i][start_col + j]:
-                                return False    # ÔÚÇøÄÚÕÒµ½ÖØ¸´Êı×Ö
+                                return False    # åœ¨åŒºå†…æ‰¾åˆ°é‡å¤æ•°å­—
 
         return True
 
     def __get_affect(self, grid):
-        '''·µ»ØÓëÖ¸¶¨¸ñÓĞÓ°ÏìµÄ¸ñ×Ó'''
+        '''è¿”å›ä¸æŒ‡å®šæ ¼æœ‰å½±å“çš„æ ¼å­'''
         result_list = []
         if grid >= (0, 0) and grid <= (Sudoku.GRID_NUM - 1, Sudoku.GRID_NUM - 1):
             for i in range(Sudoku.GRID_NUM):
@@ -332,7 +332,7 @@ class Sudoku:
 
 
     def __get_same_row(self, grid):
-        '''»ñµÃÓëÖ¸¶¨¸ñÍ¬Ò»ĞĞµÄ¸ñ×Ó'''
+        '''è·å¾—ä¸æŒ‡å®šæ ¼åŒä¸€è¡Œçš„æ ¼å­'''
         result_list = []
         if grid >= (0, 0) and grid <= (Sudoku.GRID_NUM - 1, Sudoku.GRID_NUM - 1):
             for j in range(Sudoku.GRID_NUM):
@@ -341,7 +341,7 @@ class Sudoku:
 
 
     def __get_same_col(self, grid):
-        '''»ñµÃÓëÖ¸¶¨¸ñÍ¬Ò»ÁĞµÄ¸ñ×Ó'''
+        '''è·å¾—ä¸æŒ‡å®šæ ¼åŒä¸€åˆ—çš„æ ¼å­'''
         result_list = []
         if grid >= (0, 0) and grid <= (Sudoku.GRID_NUM - 1, Sudoku.GRID_NUM - 1):
             for i in range(Sudoku.GRID_NUM):
@@ -350,7 +350,7 @@ class Sudoku:
 
 
     def __get_same_area(self, grid):
-        '''»ñµÃÓëÖ¸¶¨¸ñÍ¬Ò»ÁĞµÄ¸ñ×Ó'''
+        '''è·å¾—ä¸æŒ‡å®šæ ¼åŒä¸€åˆ—çš„æ ¼å­'''
         result_list = []
         if grid >= (0, 0) and grid <= (Sudoku.GRID_NUM - 1, Sudoku.GRID_NUM - 1):
             for i in range(Sudoku.GRID_NUM):
@@ -361,7 +361,7 @@ class Sudoku:
 
 
     def __check_answer(self):
-        '''¼ì²éÊÇ·ñ·ûºÏÊı¶À¹æÔò'''
+        '''æ£€æŸ¥æ˜¯å¦ç¬¦åˆæ•°ç‹¬è§„åˆ™'''
         check_pass = True
 
         for i in range(Sudoku.GRID_NUM):
@@ -371,11 +371,11 @@ class Sudoku:
                         if grid != (i, j):
                             if self.__answer_sudoku[grid[0]][grid[1]] == self.__answer_sudoku[i][j]:
                                 if i == grid[0]:
-                                    print "Êı×Ö[%d, %d]Óë[%d, %d]ĞĞÄÚ³åÍ»!" % (i, j, grid[0], grid[1])
+                                    print "æ•°å­—[%d, %d]ä¸[%d, %d]è¡Œå†…å†²çª!" % (i, j, grid[0], grid[1])
                                 elif j == grid[1]:
-                                    print "Êı×Ö[%d, %d]Óë[%d, %d]ÁĞÄÚ³åÍ»!" % (i, j, grid[0], grid[1])
+                                    print "æ•°å­—[%d, %d]ä¸[%d, %d]åˆ—å†…å†²çª!" % (i, j, grid[0], grid[1])
                                 else:
-                                    print "Êı×Ö[%d, %d]Óë[%d, %d]ÇøÄÚ³åÍ»!" % (i, j, grid[0], grid[1])
+                                    print "æ•°å­—[%d, %d]ä¸[%d, %d]åŒºå†…å†²çª!" % (i, j, grid[0], grid[1])
                                 check_pass = False
                                 return
 
@@ -386,11 +386,11 @@ class Sudoku:
                     all_fill = False
                     break
             if all_fill:
-                print "´ğ°¸·ûºÏ¹æÔò,¼ì²éÍ¨¹ı!"
+                print "ç­”æ¡ˆç¬¦åˆè§„åˆ™,æ£€æŸ¥é€šè¿‡!"
 
 
     def paint(self, dc):
-        '''»æÖÆÊı¶À'''
+        '''ç»˜åˆ¶æ•°ç‹¬'''
         self.__paint_affected(dc)
         self.__paint_actived(dc)
         self.__paint_grid(dc)
@@ -401,23 +401,23 @@ class Sudoku:
 
 
     def __paint_affected(self, dc):
-        '''»æÖÆ±»Ó°ÏìµÄÇøÓò'''
+        '''ç»˜åˆ¶è¢«å½±å“çš„åŒºåŸŸ'''
         dc.SetBrush(wx.Brush("#EEEEEE"))
         dc.SetPen(wx.Pen("#EEEEEE"));
         for grid in self.__affected_grids:
             dc.DrawRectangle(self.__anchor_pos[0] + grid[1] * Sudoku.GRID_WIDTH, self.__anchor_pos[1] + grid[0] * Sudoku.GRID_WIDTH, Sudoku.GRID_WIDTH, Sudoku.GRID_WIDTH)
 
-        #for i in range(Sudoku.GRID_NUM):        # YÖáÑ­»·
-            #for j in range(Sudoku.GRID_NUM):    # XÖáÑ­»·
+        #for i in range(Sudoku.GRID_NUM):        # Yè½´å¾ªç¯
+            #for j in range(Sudoku.GRID_NUM):    # Xè½´å¾ªç¯
                 #if self.__affected_area[i][j] > 0:
                     #dc.DrawRectangle(self.__anchor_pos[0] + j * Sudoku.GRID_WIDTH, self.__anchor_pos[1] + i * Sudoku.GRID_WIDTH, Sudoku.GRID_WIDTH, Sudoku.GRID_WIDTH)
 
     def __paint_actived(self, dc):
-        '''»æÖÆµ±Ç°¼¤»îÓë¿ÉÄÜ¼¤»îµÄÊı×ÖÇøÓò'''
+        '''ç»˜åˆ¶å½“å‰æ¿€æ´»ä¸å¯èƒ½æ¿€æ´»çš„æ•°å­—åŒºåŸŸ'''
         if self.__actived_num > 0:
             dc.SetBrush(wx.Brush("#D4FFD4"))
-            for i in range(Sudoku.GRID_NUM):        # YÖáÑ­»·
-                for j in range(Sudoku.GRID_NUM):    # XÖáÑ­»·
+            for i in range(Sudoku.GRID_NUM):        # Yè½´å¾ªç¯
+                for j in range(Sudoku.GRID_NUM):    # Xè½´å¾ªç¯
                     if self.__answer_sudoku[i][j] == self.__actived_num:
                         dc.SetPen(wx.Pen("#D4FFD4"))
                         dc.DrawRectangle(self.__anchor_pos[0] + j * Sudoku.GRID_WIDTH, self.__anchor_pos[1] + i * Sudoku.GRID_WIDTH, Sudoku.GRID_WIDTH, Sudoku.GRID_WIDTH)
@@ -438,7 +438,7 @@ class Sudoku:
 
 
     def __paint_grid(self, dc):
-        '''»æÖÆ¿ò¼Ü'''
+        '''ç»˜åˆ¶æ¡†æ¶'''
         myPen = wx.Pen("Black", 1, wx.SOLID)
 
         for i in range(0, Sudoku.GRID_NUM + 1):
@@ -448,80 +448,80 @@ class Sudoku:
                 myPen.SetWidth(1)
             dc.SetPen(myPen)
 
-            # ºáÏß
+            # æ¨ªçº¿
             dc.DrawLine(self.__anchor_pos[0], self.__anchor_pos[1] + i * Sudoku.GRID_WIDTH, self.__anchor_pos[0] + Sudoku.GRID_NUM * Sudoku.GRID_WIDTH, self.__anchor_pos[1] + i * Sudoku.GRID_WIDTH)
-            # ÊúÏß
+            # ç«–çº¿
             dc.DrawLine(self.__anchor_pos[0] + i * Sudoku.GRID_WIDTH, self.__anchor_pos[1], self.__anchor_pos[0] + i * Sudoku.GRID_WIDTH, self.__anchor_pos[1] + Sudoku.GRID_NUM * Sudoku.GRID_WIDTH)
 
 
     def __draw_num(self, dc, row, col, num, tp = 1, idx = 0):
-        '''ÔÚÖ¸¶¨Î»ÖÃ»æÖÆÊı×Ö
+        '''åœ¨æŒ‡å®šä½ç½®ç»˜åˆ¶æ•°å­—
 
-        num     Òª»æÖÆµÄÊı×Ö
-        tp      Êı×ÖÀàĞÍ 1:Ô­Ê¼Êı×Ö 2:´ğ°¸ 3:±¸×¢
-        idx     ±¸×¢Êı×ÖµÄÎ»ÖÃ'''
+        num     è¦ç»˜åˆ¶çš„æ•°å­—
+        tp      æ•°å­—ç±»å‹ 1:åŸå§‹æ•°å­— 2:ç­”æ¡ˆ 3:å¤‡æ³¨
+        idx     å¤‡æ³¨æ•°å­—çš„ä½ç½®'''
         offset_x = 0
         offset_y = 0
         if tp == 1 or tp == 2:
-            # »æÖÆÔ­Ê¼Êı×Ö»ò´ğ°¸
+            # ç»˜åˆ¶åŸå§‹æ•°å­—æˆ–ç­”æ¡ˆ
             myFont = wx.Font(Sudoku.FONT_SIZE, wx.SWISS, wx.NORMAL, wx.BOLD)
             dc.SetFont(myFont)
             if tp == 1:
-                # ÃÕÌâÊı×ÖÑÕÉ«
+                # è°œé¢˜æ•°å­—é¢œè‰²
                 dc.SetTextForeground("Black");
             else:
                 if self.__is_unique_all(self.__answer_sudoku, row, col):
-                    # ´ğ°¸ÑÕÉ«
+                    # ç­”æ¡ˆé¢œè‰²
                     dc.SetTextForeground("#097AD1");
                 else:
-                    # ³åÍ»´ğ°¸ÑÕÉ«
+                    # å†²çªç­”æ¡ˆé¢œè‰²
                     dc.SetTextForeground("Red");
 
             offset_x = (Sudoku.GRID_WIDTH - dc.GetTextExtent(str(num))[0]) / 2
-            offset_y = (Sudoku.GRID_WIDTH - dc.GetTextExtent(str(num))[1]) / 2 + 1     # YÖáÉÏÏòÏÂÆ«ÒÆÒ»¸öÏñËØ, ±ÜÃâÌ«¹ı¿¿ÉÏ
+            offset_y = (Sudoku.GRID_WIDTH - dc.GetTextExtent(str(num))[1]) / 2 + 1     # Yè½´ä¸Šå‘ä¸‹åç§»ä¸€ä¸ªåƒç´ , é¿å…å¤ªè¿‡é ä¸Š
         else:
-            # »æÖÆ±¸×¢Êı×Ö
+            # ç»˜åˆ¶å¤‡æ³¨æ•°å­—
             myFont = wx.Font(Sudoku.FONT_SIZE / 2, wx.SWISS, wx.NORMAL, wx.NORMAL)
             dc.SetFont(myFont)
             dc.SetTextForeground("#A1A1A1");
 
             offset_x = (Sudoku.GRID_WIDTH / Sudoku.SCALE - dc.GetTextExtent(str(num))[0]) / 2
             offset_x += (idx % Sudoku.SCALE) * Sudoku.GRID_WIDTH / Sudoku.SCALE
-            offset_y = (Sudoku.GRID_WIDTH / Sudoku.SCALE - dc.GetTextExtent(str(num))[1]) / 2 + 1  # YÖáÉÏÏòÏÂÆ«ÒÆÒ»¸öÏñËØ, ±ÜÃâÌ«¹ı¿¿ÉÏ
+            offset_y = (Sudoku.GRID_WIDTH / Sudoku.SCALE - dc.GetTextExtent(str(num))[1]) / 2 + 1  # Yè½´ä¸Šå‘ä¸‹åç§»ä¸€ä¸ªåƒç´ , é¿å…å¤ªè¿‡é ä¸Š
             offset_y += (idx // Sudoku.SCALE) * Sudoku.GRID_WIDTH / Sudoku.SCALE
 
         dc.DrawText(str(num), self.__anchor_pos[0] + col * Sudoku.GRID_WIDTH + offset_x, self.__anchor_pos[1] + row * Sudoku.GRID_WIDTH + offset_y)
 
 
     def __paint_puzzle(self, dc):
-        '''»æÖÆ³õÊ¼Êı×Ö'''
-        for i in range(Sudoku.GRID_NUM):        # YÖáÑ­»·
-            for j in range(Sudoku.GRID_NUM):    # XÖáÑ­»·
+        '''ç»˜åˆ¶åˆå§‹æ•°å­—'''
+        for i in range(Sudoku.GRID_NUM):        # Yè½´å¾ªç¯
+            for j in range(Sudoku.GRID_NUM):    # Xè½´å¾ªç¯
                 if self.__puzzle_sudoku[i][j] > 0:
                     self.__draw_num(dc, i, j, self.__puzzle_sudoku[i][j], 1)
 
 
     def __paint_answer(self, dc):
-        '''»æÖÆ´ğ°¸Êı×Ö'''
-        for i in range(Sudoku.GRID_NUM):        # YÖáÑ­»·
-            for j in range(Sudoku.GRID_NUM):    # XÖáÑ­»·
+        '''ç»˜åˆ¶ç­”æ¡ˆæ•°å­—'''
+        for i in range(Sudoku.GRID_NUM):        # Yè½´å¾ªç¯
+            for j in range(Sudoku.GRID_NUM):    # Xè½´å¾ªç¯
                 if self.__puzzle_sudoku[i][j] == 0 and self.__answer_sudoku[i][j] > 0:
                     self.__draw_num(dc, i, j, self.__answer_sudoku[i][j], 2)
 
 
     def __paint_draft(self, dc):
-        '''»æÖÆ²İ¸å'''
-        for i in range(Sudoku.GRID_NUM):        # YÖáÑ­»·
-            for j in range(Sudoku.GRID_NUM):    # XÖáÑ­»·
+        '''ç»˜åˆ¶è‰ç¨¿'''
+        for i in range(Sudoku.GRID_NUM):        # Yè½´å¾ªç¯
+            for j in range(Sudoku.GRID_NUM):    # Xè½´å¾ªç¯
                 if self.__answer_sudoku[i][j] <= 0:
                     for k in range(len(self.__draft_sudoku[i][j])):
                         self.__draw_num(dc, i, j, self.__draft_sudoku[i][j][k], 3, k)
 
 
     def active_grid(self, pos = (0, 0)):
-        '''´¦Àí×ó¼üµã»÷ÊÂ¼ş
+        '''å¤„ç†å·¦é”®ç‚¹å‡»äº‹ä»¶
 
-        ¼ÆËãµ±Ç°¼¤»îÊı×ÖÒÔ¼°ÊÜÓ°ÏìÇøÓò'''
+        è®¡ç®—å½“å‰æ¿€æ´»æ•°å­—ä»¥åŠå—å½±å“åŒºåŸŸ'''
         if pos > (0, 0):
             row = (pos[1] - self.__anchor_pos[1]) // Sudoku.GRID_WIDTH
             col = (pos[0] - self.__anchor_pos[0]) // Sudoku.GRID_WIDTH
@@ -529,14 +529,14 @@ class Sudoku:
             row = self.__actived_grid[0]
             col = self.__actived_grid[1]
         if row in range(Sudoku.GRID_NUM) and col in range(Sudoku.GRID_NUM) and (row, col) != self.__actived_grid:
-            # µã»÷ÂäÔÚÓĞĞ§·¶Î§ÄÚ
+            # ç‚¹å‡»è½åœ¨æœ‰æ•ˆèŒƒå›´å†…
             self.__actived_grid = (row, col)
-            self.__actived_num = self.__answer_sudoku[row][col]    # ¼¤»îÊı×Ö
+            self.__actived_num = self.__answer_sudoku[row][col]    # æ¿€æ´»æ•°å­—
             self.__affected_grids = self.__get_affect(self.__actived_grid)
 
 
     def input_num(self, num):
-        '''ÔÚµ±Ç°¼¤»î¸ñÊäÈëÊı×Ö'''
+        '''åœ¨å½“å‰æ¿€æ´»æ ¼è¾“å…¥æ•°å­—'''
         if num in range(1, Sudoku.GRID_NUM + 1) and self.__actived_grid >= (0, 0):
             if self.__puzzle_sudoku[self.__actived_grid[0]][self.__actived_grid[1]] == 0:
                 self.__answer_sudoku[self.__actived_grid[0]][self.__actived_grid[1]] = num
@@ -550,7 +550,7 @@ class Sudoku:
 
 
     def cancel_num(self, pos = (0, 0)):
-        '''Çå³ıµ±Ç°¼¤»î¸ñ´ğ°¸'''
+        '''æ¸…é™¤å½“å‰æ¿€æ´»æ ¼ç­”æ¡ˆ'''
         if pos > (0, 0):
             row = (pos[1] - self.__anchor_pos[1]) // Sudoku.GRID_WIDTH
             col = (pos[0] - self.__anchor_pos[0]) // Sudoku.GRID_WIDTH

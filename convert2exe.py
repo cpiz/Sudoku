@@ -1,9 +1,9 @@
 # coding=gbk
-# python转exe脚本
+# python杞琫xe鑴氭湰
 #
-# 安装cx_Freeze
-# 执行 python convert2exe.py build
-# 将自动生成build目录, 其下所有文件都必须打包
+# 瀹夎cx_Freeze
+# 鎵ц python convert2exe.py build
+# 灏嗚嚜鍔ㄧ敓鎴恇uild鐩綍, 鍏朵笅鎵�鏈夋枃浠堕兘蹇呴』鎵撳寘
 #
 
 import sys

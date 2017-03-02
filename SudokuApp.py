@@ -1,4 +1,5 @@
-#coding=gbk
+# -*- coding: utf-8 -*
+
 import sys
 import wx
 import time
@@ -51,11 +52,11 @@ class SudokuCanvas(wx.Panel):
 
         # 添加按钮
         bitmap = wx.Bitmap(os.path.normpath("random.png"), wx.BITMAP_TYPE_PNG)
-        self.btn_random = GB.GradientButton(self, -1, bitmap, "随机游戏", (self.sudoku.get_width() + 2 * self.margin, self.margin + self.sudoku.GRID_WIDTH * 3 + (self.sudoku.GRID_WIDTH - 40) / 2), (120, 40))
+        self.btn_random = GB.GradientButton(self, -1, bitmap, u"随机游戏", (self.sudoku.get_width() + 2 * self.margin, self.margin + self.sudoku.GRID_WIDTH * 3 + (self.sudoku.GRID_WIDTH - 40) / 2), (120, 40))
         bitmap = wx.Bitmap(os.path.normpath("calc.png"), wx.BITMAP_TYPE_PNG)
-        self.btn_auto_calc = GB.GradientButton(self, -1, bitmap, "自动计算", (self.sudoku.get_width() + 2 * self.margin, self.margin + self.sudoku.GRID_WIDTH * 7 + (self.sudoku.GRID_WIDTH - 40) / 2), (120, 40))
+        self.btn_auto_calc = GB.GradientButton(self, -1, bitmap, u"自动计算", (self.sudoku.get_width() + 2 * self.margin, self.margin + self.sudoku.GRID_WIDTH * 7 + (self.sudoku.GRID_WIDTH - 40) / 2), (120, 40))
         bitmap = wx.Bitmap(os.path.normpath("restart.png"), wx.BITMAP_TYPE_PNG)
-        self.btn_restart = GB.GradientButton(self, -1, bitmap, "重新开始", (self.sudoku.get_width() + 2 * self.margin, self.margin + self.sudoku.GRID_WIDTH * 8 + (self.sudoku.GRID_WIDTH - 40) / 2), (120, 40))
+        self.btn_restart = GB.GradientButton(self, -1, bitmap, u"重新开始", (self.sudoku.get_width() + 2 * self.margin, self.margin + self.sudoku.GRID_WIDTH * 8 + (self.sudoku.GRID_WIDTH - 40) / 2), (120, 40))
 
 
         self.file_cmb = file_cmb = wx.ComboBox(self, wx.NewId(), size = (100, 24), style = wx.CB_READONLY)
@@ -94,16 +95,16 @@ class SudokuCanvas(wx.Panel):
         self.textTimer.SetLabel("00:00:00")
         self.textTimer.SetPosition((self.sudoku.get_width() + 2 * self.margin, self.margin + (48 - self.textTimer.GetSize()[1]) / 2)) # 这是为了让控件对齐左边的格子
 
-        self.textProgress.SetLabel("完成度:")
+        self.textProgress.SetLabel(u"完成度:")
         self.textProgress.SetPosition((self.sudoku.get_width() + 2 * self.margin, self.margin + 48 + (48 - self.textProgress.GetSize()[1]) / 2)) # 这是为了让控件对齐左边的格子
 
-        self.textFile.SetLabel("题库：")
+        self.textFile.SetLabel(u"题库：")
         self.textFile.SetPosition((self.sudoku.get_width() + 2 * self.margin, self.margin + 106 + (48 - self.textProgress.GetSize()[1]) / 2)) # 这是为了让控件对齐左边的格子
         self.file_cmb.SetPosition((self.sudoku.get_width() + 2 * self.margin + 40, self.margin + 100 + (48 - self.textProgress.GetSize()[1]) / 2)) # 这是为了让控件对齐左边的格子
 
         self.sudoku.init_sudoku(puzzle, self.file_cmb.GetValue())
 
-        self.__parent.SetTitle("Sudoku - 第" + str(self.sudoku.get_puzzle_num()) + "题")
+        self.__parent.SetTitle(u"Sudoku - 第" + str(self.sudoku.get_puzzle_num()) + u"题")
 
 
     def ReBuffer(self):
@@ -137,7 +138,7 @@ class SudokuCanvas(wx.Panel):
     def OnPaint(self, event):
         #13 处理一个paint（描绘）请求
         #print "OnPaint"
-        self.textProgress.SetLabel("完成度:" + str(self.sudoku.get_progress()) + "/" + str(self.sudoku.GRID_NUM ** 2))
+        self.textProgress.SetLabel(u"完成度:" + str(self.sudoku.get_progress()) + u"/" + str(self.sudoku.GRID_NUM ** 2))
         wx.BufferedPaintDC(self, self.__buffer_bitmap)
 
     def OnKeyDown(self, event):
@@ -173,7 +174,7 @@ class SudokuCanvas(wx.Panel):
         if wx.TheClipboard.Open():
             wx.TheClipboard.SetData(self.do)
             wx.TheClipboard.Close()
-            wx.MessageBox("已将此题导出到剪贴板", "导出提示")
+            wx.MessageBox(u"已将此题导出到剪贴板", u"导出提示")
 
 
     def OnPaste(self):
@@ -186,7 +187,7 @@ class SudokuCanvas(wx.Panel):
                 puzzle_str = do.GetText()
                 if puzzle_str.isdigit()                                         \
                         and len(puzzle_str) == c_sudoku.Sudoku.GRID_NUM ** 2:
-                    dlg = wx.MessageDialog(self, "确定要导入剪贴板中的题局吗?", "导入确认", wx.YES_NO)
+                    dlg = wx.MessageDialog(self, u"确定要导入剪贴板中的题局吗?", u"导入确认", wx.YES_NO)
                     if dlg.ShowModal() == wx.ID_YES:
                         self.InitGame(puzzle_str)
                         self.SetFocus()     # 处理完按钮事件后必须将focus交给canvas, 否则无法响应键盘事件
@@ -232,7 +233,7 @@ class SudokuCanvas(wx.Panel):
 
 class SudokuFrame(wx.Frame):
     def __init__(self, parent):
-        wx.Frame.__init__(self, parent, -1, "Sudoku", pos = (600, 200), size = (200, 200))
+        wx.Frame.__init__(self, parent, -1, u"Sudoku", pos = (600, 200), size = (200, 200))
         self.sketch = SudokuCanvas(self, -1)
         self.SetClientSize(self.sketch.GetClientSize())
 

@@ -1,4 +1,4 @@
-# coding=gbk
+# -*- coding: utf-8 -*-
 # python转exe脚本
 #
 # 安装cx_Freeze
